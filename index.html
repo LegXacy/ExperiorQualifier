@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experior Phone Qualifier | Tactical Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <!-- SheetJS for true XLSX Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#F5A623',
+                            orange: '#E8651A',
+                            dark: '#0D0F14',
+                            surface: '#151820',
+                            border: '#1F242F',
+                            text: '#F0EDE8',
+                            muted: '#6B7280'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['DM Sans', 'Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-brand-dark text-brand-text font-sans antialiased overflow-hidden;
+            }
+            ::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                @apply bg-brand-dark;
+            }
+            ::-webkit-scrollbar-thumb {
+                @apply bg-brand-border rounded-full hover:bg-brand-muted transition-colors;
+            }
+        }
+
+        @layer components {
+            .panel-container {
+                @apply flex h-[calc(100vh-64px)] overflow-hidden;
+            }
+            .script-panel {
+                @apply w-[52%] h-full overflow-y-auto border-r border-brand-border bg-brand-dark px-8 py-10 scroll-smooth;
+            }
+            .form-panel {
+                @apply flex-1 h-full overflow-y-auto bg-brand-surface px-8 py-10;
+            }
+            .section-active {
+                @apply border-l-4 border-brand-gold bg-brand-gold/5 -ml-8 pl-[28px] transition-all duration-300;
+            }
+            .input-field {
+                @apply w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-2.5 text-brand-text focus:outline-none focus:border-brand-gold transition-colors placeholder:text-brand-muted/50;
+            }
+            .label-text {
+                @apply block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5;
+            }
+            .btn-primary {
+                @apply bg-brand-gold hover:bg-brand-gold/90 text-brand-dark font-bold py-3 px-6 rounded-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2;
+            }
+            .btn-secondary {
+                @apply bg-brand-border hover:bg-brand-border/80 text-brand-text font-semibold py-3 px-6 rounded-lg transition-all active:scale-[0.98];
+            }
+            .placeholder-tag {
+                @apply text-brand-orange italic font-mono opacity-80;
+            }
+        }
+
+        /* Custom UI Tweaks */
+        .glass-header {
+            background: rgba(13, 15, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .score-bar-bg {
+            background: linear-gradient(90deg, #EF4444 0%, #F59E0B 40%, #F5A623 70%, #10B981 100%);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="glass-header h-16 fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-brand-gold rounded flex items-center justify-center">
+                    <span class="text-brand-dark font-bold text-xl">E</span>
+                </div>
+                <h1 class="font-bold text-lg tracking-tight uppercase">Experior <span
+                        class="text-brand-gold">Qualifier</span></h1>
+            </div>
+            <div class="h-6 w-px bg-brand-border mx-2"></div>
+            <!-- Stopwatch -->
+            <div
+                class="flex items-center gap-3 bg-brand-surface/50 border border-brand-border px-3 py-1.5 rounded-full">
+                <span id="stopwatch"
+                    class="font-mono text-brand-gold text-lg font-semibold w-24 text-center">00:00:00</span>
+                <div class="flex gap-1">
+                    <button id="toggle-timer" class="p-1 hover:text-brand-gold transition-colors" title="Start/Pause">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </button>
+                    <button id="reset-timer" class="p-1 hover:text-brand-orange transition-colors" title="Reset">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <path d="M3 3v5h5"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <!-- Score Meter -->
+            <div class="flex flex-col items-end gap-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] text-brand-muted uppercase font-bold tracking-widest">Qualification
+                        Score</span>
+                    <span id="score-value" class="text-brand-gold font-bold text-xl">0</span>
+                </div>
+                <div class="w-48 h-1.5 bg-brand-border rounded-full overflow-hidden relative">
+                    <div class="score-bar-bg absolute inset-0 opacity-20"></div>
+                    <div id="score-fill"
+                        class="h-full bg-brand-gold transition-all duration-500 shadow-[0_0_8px_rgba(245,166,35,0.5)]"
+                        style="width: 0%"></div>
+                </div>
+            </div>
+
+            <button id="clear-all"
+                class="text-brand-muted hover:text-brand-orange transition-colors text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                </svg>
+                New Call
+            </button>
+        </div>
+    </header>
+
+    <main class="panel-container pt-16">
+        <!-- Left: Script Panel -->
+        <section id="script-container" class="script-panel">
+            <!-- Sections will be injected here -->
+        </section>
+
+        <!-- Right: Form Panel -->
+        <section class="form-panel">
+            <div class="max-w-2xl mx-auto space-y-12 pb-24">
+                <!-- Contact Section -->
+                <section data-section="1">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-full bg-brand-gold text-brand-dark text-xs flex items-center justify-center font-bold">1</span>
+                        Contact Information
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-1">
+                            <label class="label-text">First Name*</label>
+                            <input type="text" data-field="firstName" class="input-field" placeholder="John" required>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Middle Name</label>
+                            <input type="text" data-field="middleName" class="input-field" placeholder="Middle Name">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Last Name*</label>
+                            <input type="text" data-field="lastName" class="input-field" placeholder="Doe" required>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Birthday</label>
+                            <input type="date" data-field="birthday" class="input-field">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Gender</label>
+                            <select data-field="gender" class="input-field">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Phone*</label>
+                            <input type="tel" data-field="phone" class="input-field" placeholder="+1 (555) 000-0000"
+                                required>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Phone Type</label>
+                            <select data-field="phoneType" class="input-field">
+                                <option value="">Select Type</option>
+                                <option value="Home">Home</option>
+                                <option value="Business">Business</option>
+                                <option value="Personal">Personal</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Main Email</label>
+                            <input type="email" data-field="email" class="input-field" placeholder="john@example.com">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Home Phone</label>
+                            <input type="tel" data-field="homePhone" class="input-field" placeholder="Home Phone">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Work Phone</label>
+                            <input type="tel" data-field="workPhone" class="input-field" placeholder="Work Phone">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Cell Phone</label>
+                            <input type="tel" data-field="cellPhone" class="input-field" placeholder="Cell Phone">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Address Section -->
+                <section data-section="2">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-full bg-brand-gold text-brand-dark text-xs flex items-center justify-center font-bold">2</span>
+                        Location
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-1">
+                            <label class="label-text">State</label>
+                            <input type="text" data-field="state" class="input-field" placeholder="State">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">City</label>
+                            <input type="text" data-field="city" class="input-field" placeholder="City">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="label-text">Street</label>
+                            <input type="text" data-field="street" class="input-field" placeholder="Street Address">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Zip Code</label>
+                            <input type="text" data-field="zipCode" class="input-field" placeholder="Zip Code">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Personal / Professional Section -->
+                <section data-section="3">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-full bg-brand-gold text-brand-dark text-xs flex items-center justify-center font-bold">3</span>
+                        Personal & Professional
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-1">
+                            <label class="label-text">Social Status</label>
+                            <select data-field="socialStatus" class="input-field">
+                                <option value="">Select Status</option>
+                                <option value="Married">Married</option>
+                                <option value="Single">Single</option>
+                                <option value="Divorced">Divorced</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Profession</label>
+                            <input type="text" data-field="profession" class="input-field" placeholder="Job Title">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="label-text">Tobacco Use</label>
+                            <select data-field="tobaccoUse" class="input-field">
+                                <option value="">Select Tobacco Use</option>
+                                <option value="Non Smoker">Non Smoker</option>
+                                <option value="Smoker">Smoker</option>
+                                <option value="Don't know">Don't know</option>
+                                <option value="None Ever">None Ever</option>
+                                <option value="None last 3mo">None last 3mo</option>
+                                <option value="None last 1yr">None last 1yr</option>
+                                <option value="None last 3yr">None last 3yr</option>
+                                <option value="Pipes & cigars only">Pipes & cigars only</option>
+                                <option value="Cigarettes">Cigarettes</option>
+                                <option value="Nicotine patches & gum">Nicotine patches & gum</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Annual Income (Approx)</label>
+                            <input type="text" data-field="annualIncome" class="input-field" placeholder="e.g. 75,000">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Interested in Experior</label>
+                            <select data-field="interestedInExperior" class="input-field">
+                                <option value="">Select Option</option>
+                                <option value="Y">Yes</option>
+                                <option value="N">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Spouse Section (Conditional) -->
+                <section data-section="4" id="spouse-section" class="hidden">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-full bg-brand-gold text-brand-dark text-xs flex items-center justify-center font-bold">4</span>
+                        Spouse Information
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4 border border-brand-gold/20 p-6 rounded-xl bg-brand-gold/5">
+                        <div class="col-span-1">
+                            <label class="label-text">Spouse First Name</label>
+                            <input type="text" data-field="spouseFirstName" class="input-field"
+                                placeholder="Spouse First Name">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Spouse Last Name</label>
+                            <input type="text" data-field="spouseLastName" class="input-field"
+                                placeholder="Spouse Last Name">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Spouse Birthday</label>
+                            <input type="date" data-field="spouseBirthday" class="input-field">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Spouse Gender</label>
+                            <select data-field="spouseGender" class="input-field">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Spouse Profession</label>
+                            <input type="text" data-field="spouseProfession" class="input-field"
+                                placeholder="Profession">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Spouse Tobacco Use</label>
+                            <select data-field="spouseTobaccoUse" class="input-field">
+                                <option value="">Select Tobacco Use</option>
+                                <option value="Non Smoker">Non Smoker</option>
+                                <option value="Smoker">Smoker</option>
+                            </select>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="label-text">Wedding Anniversary</label>
+                            <input type="date" data-field="weddingAnniversary" class="input-field">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Policy Section -->
+                <section data-section="6">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-full bg-brand-gold text-brand-dark text-xs flex items-center justify-center font-bold">5</span>
+                        Existing Coverage
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-1">
+                            <label class="label-text">Insurance Plan</label>
+                            <input type="text" data-field="insurancePlan" class="input-field" placeholder="Plan Type">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Company</label>
+                            <input type="text" data-field="company" class="input-field" placeholder="Company Name">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Owner of Policy</label>
+                            <input type="text" data-field="policyOwner" class="input-field" placeholder="Owner Name">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Renewal Date</label>
+                            <input type="date" data-field="renewalDate" class="input-field">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Face Amount</label>
+                            <input type="text" data-field="faceAmount" class="input-field" placeholder="$ 0.00">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Annual Premium</label>
+                            <input type="text" data-field="annualPremium" class="input-field" placeholder="$ 0.00">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Policy Year</label>
+                            <input type="number" data-field="policyYear" class="input-field" placeholder="Year">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="label-text">Policy Number</label>
+                            <input type="text" data-field="policyNumber" class="input-field" placeholder="Number">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Metadata Section -->
+                <section data-section="8">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span
+                            class="w-6 h-6 rounded-full bg-brand-gold text-brand-dark text-xs flex items-center justify-center font-bold">6</span>
+                        CRM Metadata & Notes
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="label-text">Tags (comma separated)</label>
+                            <input type="text" data-field="tags" class="input-field"
+                                placeholder="e.g. Cold Call, May 2026">
+                        </div>
+                        <div>
+                            <label class="label-text">Notes (Exported to CRM)</label>
+                            <textarea data-field="notes" class="input-field h-24"
+                                placeholder="Add detailed call notes here..."></textarea>
+                        </div>
+                        <div>
+                            <label class="label-text">Agent Notes (Private)</label>
+                            <textarea data-field="agentNotes" class="input-field h-24 border-dashed"
+                                placeholder="Personal notes (will not be exported)"></textarea>
+                        </div>
+                        <div>
+                            <label class="label-text">Lead Source</label>
+                            <select data-field="leadSource" class="input-field">
+                                <option value="Cold Call">Cold Call</option>
+                                <option value="Aged Lead">Aged Lead</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Referral">Referral</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Export Button (Sticky Bottom) -->
+                <div class="fixed bottom-0 right-0 w-[48%] glass-header p-6 flex justify-end gap-4 z-40">
+                    <button id="open-objections" class="btn-secondary flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Objections
+                    </button>
+                    <button id="prepare-export" class="btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Prepare for CRM
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Objection Sidebar -->
+    <aside id="objection-sidebar"
+        class="fixed top-0 right-0 w-96 h-full bg-brand-dark border-l border-brand-border z-[60] translate-x-full transition-transform duration-300 shadow-2xl">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-brand-border">
+            <h3 class="font-bold uppercase tracking-widest text-brand-gold text-sm">Objection Handling</h3>
+            <button id="close-objections" class="text-brand-muted hover:text-brand-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto h-[calc(100vh-64px)] space-y-6" id="objection-content">
+            <!-- Objections will be injected here -->
+        </div>
+    </aside>
+
+    <!-- Modal Container (Export) -->
+    <div id="export-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-brand-dark/90 backdrop-blur-sm"></div>
+        <div
+            class="bg-brand-surface border border-brand-border w-full max-w-2xl rounded-2xl shadow-2xl relative z-10 overflow-hidden">
+            <div class="p-8">
+                <h3 class="text-2xl font-bold mb-2">CRM Export Ready</h3>
+                <p class="text-brand-muted mb-6">The data below is formatted for the Experior CRM. Click below to
+                    download as a real Excel (.xlsx) file.</p>
+
+                <div class="bg-brand-dark rounded-lg p-4 font-mono text-sm border border-brand-border mb-6 overflow-x-auto whitespace-nowrap"
+                    id="export-preview">
+                    <!-- TSV Row (Still shown for visual confirmation) -->
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="copy-tsv" class="btn-secondary">Copy Data (TSV)</button>
+                    <button id="download-xlsx" class="btn-primary">Download as Excel (.xlsx)</button>
+                </div>
+            </div>
+            <div class="bg-brand-dark/50 p-6 border-t border-brand-border flex justify-between items-center">
+                <span id="export-timestamp" class="text-xs font-mono text-brand-muted"></span>
+                <button id="close-modal"
+                    class="font-bold text-sm uppercase tracking-wider hover:text-brand-gold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Objection Template -->
+    <script id="objection-template" type="text/template">
+        <div class="space-y-4">
+            <div class="bg-brand-surface p-4 rounded-lg border border-brand-border">
+                <h4 class="font-bold text-brand-gold mb-2">"I already have insurance"</h4>
+                <p class="text-sm text-brand-text leading-relaxed">"That's great! It shows you value protection. Most of my clients did too, but they were surprised to find they were either overpaying or had gaps they didn't know about. I'd love to just do a quick side-by-side comparison for you—no obligation."</p>
+            </div>
+            <div class="bg-brand-surface p-4 rounded-lg border border-brand-border">
+                <h4 class="font-bold text-brand-gold mb-2">"I can't afford it right now"</h4>
+                <p class="text-sm text-brand-text leading-relaxed">"I completely understand. My goal isn't to add a burden, but to see if we can find a plan that fits your current budget or even saves you money on what you might already be doing. It costs nothing to look at the numbers, right?"</p>
+            </div>
+            <div class="bg-brand-surface p-4 rounded-lg border border-brand-border">
+                <h4 class="font-bold text-brand-gold mb-2">"I need to talk to my spouse"</h4>
+                <p class="text-sm text-brand-text leading-relaxed">"That makes perfect sense—it's a household decision. Why don't we get the preliminary information down now, and then we can set a brief follow-up call with both of you present? That way, you have all the facts to discuss together."</p>
+            </div>
+            <div class="bg-brand-surface p-4 rounded-lg border border-brand-border">
+                <h4 class="font-bold text-brand-gold mb-2">"I'm not interested"</h4>
+                <p class="text-sm text-brand-text leading-relaxed">"I appreciate your honesty. Just so I'm sure—is it that you're set for life, or just that now isn't a good time to talk? If it's just timing, I'd be happy to send over some info or call back when things are quieter."</p>
+            </div>
+        </div>
+    </script>
+
+    <script>
+        // Constants & Config
+        const SCRIPT_SECTIONS = [
+            {
+                id: 1,
+                title: "Opener / Warm-Up",
+                content: `Hi, is this <span class="placeholder-tag">[firstName]</span>? <br><br>Hi <span class="placeholder-tag">[firstName]</span>, this is Tyler with Experior Financial Group. How are you doing today? <br><br>I'm reaching out because you recently inquired about some financial protection options, and I wanted to make sure you got the info you were looking for.`,
+                triggers: [] // Always visible
+            },
+            {
+                id: 2,
+                title: "Permission & Purpose",
+                content: `Now <span class="placeholder-tag">[firstName]</span>, I know your time is valuable. I just have a few quick questions to see how we can best help you and your family. Is now a good time to chat for 2-3 minutes?`,
+                triggers: ['firstName']
+            },
+            {
+                id: 3,
+                title: "Needs Discovery",
+                content: `Great. And just to confirm, you're still located in <span class="placeholder-tag">[city]</span>, <span class="placeholder-tag">[state]</span>? <br><br>Excellent. Now, tell me a bit about your current situation. What is your current <span class="placeholder-tag">[socialStatus]</span>? And what do you do for a living, <span class="placeholder-tag">[firstName]</span>?`,
+                triggers: ['socialStatus', 'profession']
+            },
+            {
+                id: 4,
+                title: "Household & Spouse",
+                content: `That's interesting. And <span class="placeholder-tag">[firstName]</span>, you mentioned you're <span class="placeholder-tag">[socialStatus]</span>. Does <span class="placeholder-tag">[spouseFirstName]</span> also work in <span class="placeholder-tag">[spouseProfession]</span>? <br><br>The reason I ask is that we often find ways to maximize benefits when we look at the household as a whole. Between the two of you, what would you say your approximate annual income is?`,
+                triggers: ['annualIncome']
+            },
+            {
+                id: 5,
+                title: "Health & Lifestyle",
+                content: `I appreciate you sharing that. Now, a couple of health questions—they're standard but important. Do you or <span class="placeholder-tag">[spouseFirstName]</span> use any tobacco products? <span class="placeholder-tag">[tobaccoUse]</span>. <br><br>Any major health concerns in the last few years that I should be aware of?`,
+                triggers: ['tobaccoUse']
+            },
+            {
+                id: 6,
+                title: "Current Coverage Check",
+                content: `Got it. Do you currently have any life insurance or mortgage protection in place right now? <br><br>Who is that with? <span class="placeholder-tag">[company]</span>. And do you know what kind of plan that is? <span class="placeholder-tag">[insurancePlan]</span>.`,
+                triggers: ['insurancePlan', 'company']
+            },
+            {
+                id: 7,
+                title: "Budget & Fit",
+                content: `Okay, and what are you currently paying for that monthly? <span class="placeholder-tag">[annualPremium]</span>. <br><br>If we could find a way to provide more comprehensive coverage—or even the same coverage for a better rate—would that be something you'd want to see?`,
+                triggers: ['annualPremium']
+            },
+            {
+                id: 8,
+                title: "Appointment Close",
+                content: `Perfect. Based on what you've told me, <span class="placeholder-tag">[firstName]</span>, I think we have some excellent options for you. <br><br>I'd like to schedule a brief follow-up to show you exactly what we can do. Would Tuesday at 4pm or Wednesday at 10am work better for you and <span class="placeholder-tag">[spouseFirstName]</span>?`,
+                triggers: ['interestedInExperior']
+            }
+        ];
+
+        const CRM_HEADERS = [
+            "First name", "Middle name", "Last name", "Birthday", "Gender", "Phone", "PhoneType",
+            "Main email", "Social status", "Profession", "Tobacco use", "Home Phone Number",
+            "Work Phone Number", "Cell phone", "State", "City", "Street", "Zip code",
+            "Annual Income Approx", "Interested in working with Experior", "Spouse First Name",
+            "Spouse Last Name", "Spouse's Birthday", "Spouse's Gender", "Spouse's Profession",
+            "Spouse tobacco use?", "Wedding Anniversary Date", "Tags(comma-separated)", "Notes",
+            "Insurance plan", "Company", "Owner of policy", "Renewal date", "Face amount",
+            "Annual Premium", "Policy year", "Policy number"
+        ];
+
+        // State Management
+        let state = {
+            fields: {},
+            timer: {
+                seconds: 0,
+                isRunning: false,
+                interval: null
+            },
+            activeSection: 1
+        };
+
+        // DOM Elements
+        const scriptContainer = document.getElementById('script-container');
+        const formInputs = document.querySelectorAll('[data-field]');
+        const stopwatchDisplay = document.getElementById('stopwatch');
+        const toggleTimerBtn = document.getElementById('toggle-timer');
+        const resetTimerBtn = document.getElementById('reset-timer');
+        const scoreValueDisplay = document.getElementById('score-value');
+        const scoreFill = document.getElementById('score-fill');
+        const clearAllBtn = document.getElementById('clear-all');
+        const objectionSidebar = document.getElementById('objection-sidebar');
+        const openObjectionsBtn = document.getElementById('open-objections');
+        const closeObjectionsBtn = document.getElementById('close-objections');
+        const exportModal = document.getElementById('export-modal');
+        const prepareExportBtn = document.getElementById('prepare-export');
+        const closeModalBtn = document.getElementById('close-modal');
+
+        // Initialization
+        function init() {
+            loadState();
+            renderScript();
+            updateScore();
+            setupEventListeners();
+            startPersistence();
+            renderObjections();
+
+            if (state.timer.isRunning) {
+                resumeTimer();
+            }
+        }
+
+        // Script Rendering & Interpolation
+        function renderScript() {
+            scriptContainer.innerHTML = SCRIPT_SECTIONS.map(section => `
+                <div id="script-sec-${section.id}" class="mb-12 pb-12 border-b border-brand-border/30 last:border-0 transition-all duration-300 ${state.activeSection === section.id ? 'section-active' : 'opacity-40'}">
+                    <h3 class="text-xs font-bold text-brand-gold uppercase tracking-[0.2em] mb-4">Section ${section.id}: ${section.title}</h3>
+                    <div class="font-mono text-lg leading-relaxed text-brand-text/90 script-content">
+                        ${interpolate(section.content)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function interpolate(content) {
+            return content.replace(/\[(\w+)\]/g, (match, fieldName) => {
+                const value = state.fields[fieldName];
+                if (value && value.trim() !== "") {
+                    return `<span class="text-brand-gold font-bold decoration-brand-gold/30 underline decoration-2 underline-offset-4">${value}</span>`;
+                }
+                return `<span class="placeholder-tag">[${fieldName.replace(/([A-Z])/g, ' $1').trim()}]</span>`;
+            });
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            formInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const field = e.target.dataset.field;
+                    state.fields[field] = e.target.value;
+
+                    if (field === 'socialStatus') {
+                        const spouseSec = document.getElementById('spouse-section');
+                        if (e.target.value === 'Married') {
+                            spouseSec.classList.remove('hidden');
+                        } else {
+                            spouseSec.classList.add('hidden');
+                        }
+                    }
+
+                    updateActiveSection(field);
+                    renderScript();
+                    updateScore();
+                });
+
+                input.addEventListener('focus', (e) => {
+                    const sectionId = e.target.closest('section')?.dataset.section;
+                    if (sectionId) {
+                        setActiveSection(parseInt(sectionId));
+                    }
+                });
+            });
+
+            toggleTimerBtn.addEventListener('click', toggleTimer);
+            resetTimerBtn.addEventListener('click', resetTimer);
+            openObjectionsBtn.addEventListener('click', () => objectionSidebar.classList.remove('translate-x-full'));
+            closeObjectionsBtn.addEventListener('click', () => objectionSidebar.classList.add('translate-x-full'));
+            prepareExportBtn.addEventListener('click', showExportModal);
+            closeModalBtn.addEventListener('click', () => exportModal.classList.add('hidden'));
+            document.getElementById('copy-tsv').addEventListener('click', copyToClipboard);
+            document.getElementById('download-xlsx').addEventListener('click', downloadXLSX);
+
+            clearAllBtn.addEventListener('click', () => {
+                if (confirm("Clear all data and start a new call?")) {
+                    localStorage.removeItem('experior_state');
+                    location.reload();
+                }
+            });
+        }
+
+        // Active Section Management
+        function setActiveSection(id) {
+            if (state.activeSection === id) return;
+            state.activeSection = id;
+            const sections = document.querySelectorAll('.script-panel > div');
+            sections.forEach(s => {
+                const sid = parseInt(s.id.split('-').pop());
+                if (sid === id) {
+                    s.classList.add('section-active');
+                    s.classList.remove('opacity-40');
+                    s.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    s.classList.remove('section-active');
+                    s.classList.add('opacity-40');
+                }
+            });
+        }
+
+        function updateActiveSection(fieldChanged) {
+            let newActive = 1;
+            for (let i = SCRIPT_SECTIONS.length - 1; i >= 0; i--) {
+                const section = SCRIPT_SECTIONS[i];
+                if (section.triggers.some(t => state.fields[t] && state.fields[t].trim() !== "")) {
+                    newActive = section.id;
+                    break;
+                }
+            }
+            if (newActive > state.activeSection) {
+                setActiveSection(newActive);
+            }
+        }
+
+        // Score Calculation
+        function updateScore() {
+            let score = 0;
+            const f = state.fields;
+            if (f.phone && (f.email || f.homePhone)) score += 10;
+            if (f.annualIncome) score += 15;
+            if (f.tobaccoUse) score += 10;
+            if (f.insurancePlan || f.company) score += 10;
+            if (f.socialStatus === 'Married') score += 10;
+            if (f.interestedInExperior === 'Y') score += 30;
+            if (f.notes && f.notes.length > 20) score += 15;
+            scoreValueDisplay.textContent = score;
+            scoreFill.style.width = `${score}%`;
+            if (score < 40) scoreFill.style.backgroundColor = '#EF4444';
+            else if (score < 70) scoreFill.style.backgroundColor = '#F59E0B';
+            else if (score < 90) scoreFill.style.backgroundColor = '#F5A623';
+            else scoreFill.style.backgroundColor = '#10B981';
+        }
+
+        // Timer Logic
+        function toggleTimer() {
+            if (state.timer.isRunning) {
+                clearInterval(state.timer.interval);
+                state.timer.isRunning = false;
+                toggleTimerBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+            } else {
+                state.timer.isRunning = true;
+                toggleTimerBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+                state.timer.interval = setInterval(() => {
+                    state.timer.seconds++;
+                    updateTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        function resumeTimer() {
+            state.timer.interval = setInterval(() => {
+                state.timer.seconds++;
+                updateTimerDisplay();
+            }, 1000);
+            toggleTimerBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+        }
+
+        function resetTimer() {
+            clearInterval(state.timer.interval);
+            state.timer.seconds = 0;
+            state.timer.isRunning = false;
+            updateTimerDisplay();
+            toggleTimerBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+        }
+
+        function updateTimerDisplay() {
+            const h = Math.floor(state.timer.seconds / 3600).toString().padStart(2, '0');
+            const m = Math.floor((state.timer.seconds % 3600) / 60).toString().padStart(2, '0');
+            const s = (state.timer.seconds % 60).toString().padStart(2, '0');
+            stopwatchDisplay.textContent = `${h}:${m}:${s}`;
+        }
+
+        // Export Logic
+        function getRowData() {
+            const f = state.fields;
+            return [
+                f.firstName || "", f.middleName || "", f.lastName || "", f.birthday || "", f.gender || "", f.phone || "", f.phoneType || "",
+                f.email || "", f.socialStatus || "", f.profession || "", f.tobaccoUse || "", f.homePhone || "",
+                f.workPhone || "", f.cellPhone || "", f.state || "", f.city || "", f.street || "", f.zipCode || "",
+                f.annualIncome || "", f.interestedInExperior || "", f.spouseFirstName || "",
+                f.spouseLastName || "", f.spouseBirthday || "", f.spouseGender || "", f.spouseProfession || "",
+                f.spouseTobaccoUse || "", f.weddingAnniversary || "", f.tags || "", f.notes || "",
+                f.insurancePlan || "", f.company || "", f.policyOwner || "", f.renewalDate || "", f.faceAmount || "",
+                f.annualPremium || "", f.policyYear || "", f.policyNumber || ""
+            ];
+        }
+
+        function showExportModal() {
+            const req = ['firstName', 'lastName', 'phone'];
+            let missing = [];
+            req.forEach(r => {
+                if (!state.fields[r]) {
+                    missing.push(r);
+                    document.querySelector(`[data-field="${r}"]`).classList.add('border-red-500');
+                } else {
+                    document.querySelector(`[data-field="${r}"]`).classList.remove('border-red-500');
+                }
+            });
+            if (missing.length > 0) {
+                alert("Please fill in required fields (First Name, Last Name, Phone) before exporting.");
+                return;
+            }
+            const rowData = getRowData();
+            document.getElementById('export-preview').textContent = rowData.join("\t");
+            document.getElementById('export-timestamp').textContent = `Generated: ${new Date().toLocaleString()}`;
+            exportModal.classList.remove('hidden');
+            exportModal.classList.add('flex');
+        }
+
+        async function copyToClipboard() {
+            const tsv = document.getElementById('export-preview').textContent;
+            await navigator.clipboard.writeText(tsv);
+            const btn = document.getElementById('copy-tsv');
+            const originalText = btn.textContent;
+            btn.textContent = "Copied!";
+            btn.classList.add('bg-green-600');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-green-600');
+            }, 2000);
+        }
+
+        function downloadXLSX() {
+            const data = [CRM_HEADERS, getRowData()];
+            const worksheet = XLSX.utils.aoa_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Experior CRM Import");
+            const name = (state.fields.lastName || 'Lead') + '_' + new Date().toISOString().split('T')[0];
+            XLSX.writeFile(workbook, `${name}.xlsx`);
+        }
+
+        // Persistence
+        function startPersistence() {
+            setInterval(() => {
+                const saveState = {
+                    fields: state.fields,
+                    timerSeconds: state.timer.seconds,
+                    timerIsRunning: state.timer.isRunning,
+                    activeSection: state.activeSection
+                };
+                localStorage.setItem('experior_state', JSON.stringify(saveState));
+            }, 2000);
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('experior_state');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                state.fields = parsed.fields || {};
+                state.timer.seconds = parsed.timerSeconds || 0;
+                state.timer.isRunning = parsed.timerIsRunning || false;
+                state.activeSection = parsed.activeSection || 1;
+                Object.keys(state.fields).forEach(key => {
+                    const input = document.querySelector(`[data-field="${key}"]`);
+                    if (input) {
+                        input.value = state.fields[key];
+                        if (key === 'socialStatus' && state.fields[key] === 'Married') {
+                            document.getElementById('spouse-section').classList.remove('hidden');
+                        }
+                    }
+                });
+                updateTimerDisplay();
+            }
+        }
+
+        function renderObjections() {
+            const template = document.getElementById('objection-template');
+            document.getElementById('objection-content').innerHTML = template.innerHTML;
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
