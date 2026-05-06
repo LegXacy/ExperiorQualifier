@@ -111,8 +111,11 @@
             <div class="h-6 w-px bg-brand-border mx-2"></div>
             <!-- Agent Name -->
             <div class="flex items-center gap-2">
-                <label class="text-[10px] text-brand-muted uppercase font-bold tracking-widest whitespace-nowrap">Your Name</label>
-                <input type="text" id="agent-name-input" class="bg-brand-dark/50 border border-brand-border rounded px-2 py-1 text-sm font-bold text-brand-gold w-24 focus:outline-none focus:border-brand-gold transition-colors placeholder:text-brand-muted/50" placeholder="e.g. Tyler">
+                <label class="text-[10px] text-brand-muted uppercase font-bold tracking-widest whitespace-nowrap">Your
+                    Name</label>
+                <input type="text" id="agent-name-input"
+                    class="bg-brand-dark/50 border border-brand-border rounded px-2 py-1 text-sm font-bold text-brand-gold w-24 focus:outline-none focus:border-brand-gold transition-colors placeholder:text-brand-muted/50"
+                    placeholder="e.g. Tyler">
             </div>
             <div class="h-6 w-px bg-brand-border mx-2"></div>
             <!-- Stopwatch -->
@@ -177,15 +180,21 @@
         <section class="form-panel">
             <div class="max-w-2xl mx-auto space-y-12 pb-24">
                 <!-- Lead Source Section -->
-                <section id="lead-source-section" class="bg-brand-surface border border-brand-border p-6 rounded-xl space-y-4 shadow-lg mb-8 relative overflow-hidden">
+                <section id="lead-source-section"
+                    class="bg-brand-surface border border-brand-border p-6 rounded-xl space-y-4 shadow-lg mb-8 relative overflow-hidden">
                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-gold"></div>
                     <h2 class="text-xl font-bold flex items-center gap-3 mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand-gold"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-brand-gold">
+                            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
                         Lead Source
                     </h2>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
-                            <select data-field="leadSource" id="leadSourceDropdown" class="input-field text-lg font-bold border-brand-gold/30">
+                            <select data-field="leadSource" id="leadSourceDropdown"
+                                class="input-field text-lg font-bold border-brand-gold/30">
                                 <option value="Aged Lead">Aged Lead</option>
                                 <option value="Fresh Lead">Fresh Lead</option>
                                 <option value="Referral">Referral</option>
@@ -195,11 +204,15 @@
                         </div>
                         <div id="referredByContainer" class="col-span-2 hidden">
                             <label class="label-text text-brand-gold">Referred By*</label>
-                            <input type="text" data-field="referredBy" class="input-field border-brand-gold/50 bg-brand-gold/5 placeholder:text-brand-gold/50" placeholder="Name of referrer">
+                            <input type="text" data-field="referredBy"
+                                class="input-field border-brand-gold/50 bg-brand-gold/5 placeholder:text-brand-gold/50"
+                                placeholder="Name of referrer">
                         </div>
                         <div id="eventNameContainer" class="col-span-2 hidden">
                             <label class="label-text text-brand-gold">Event Name*</label>
-                            <input type="text" data-field="eventName" class="input-field border-brand-gold/50 bg-brand-gold/5 placeholder:text-brand-gold/50" placeholder="Name of event">
+                            <input type="text" data-field="eventName"
+                                class="input-field border-brand-gold/50 bg-brand-gold/5 placeholder:text-brand-gold/50"
+                                placeholder="Name of event">
                         </div>
                     </div>
                 </section>
@@ -470,28 +483,43 @@
                 <!-- Call Outcome & Workflow Section -->
                 <section id="workflow-section" class="border-t border-brand-border pt-8 mt-8">
                     <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand-gold"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-brand-gold">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
                         Call Outcome
                     </h2>
                     <div class="grid grid-cols-2 gap-4">
-                        <button type="button" data-outcome="Appointment Set" class="outcome-btn bg-brand-dark border border-green-500/30 text-green-500 hover:bg-green-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                        <button type="button" data-outcome="Appointment Set"
+                            class="outcome-btn bg-brand-dark border border-green-500/30 text-green-500 hover:bg-green-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
                             ✅ Appointment Set
                         </button>
-                        <button type="button" data-outcome="Follow Up" class="outcome-btn bg-brand-dark border border-orange-500/30 text-orange-500 hover:bg-orange-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                        <button type="button" data-outcome="Follow Up"
+                            class="outcome-btn bg-brand-dark border border-orange-500/30 text-orange-500 hover:bg-orange-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
                             🔁 Follow Up
                         </button>
-                        <button type="button" data-outcome="Not Interested" class="outcome-btn bg-brand-dark border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                        <button type="button" data-outcome="Not Interested"
+                            class="outcome-btn bg-brand-dark border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
                             ❌ Not Interested
                         </button>
-                        <button type="button" data-outcome="No Answer" class="outcome-btn bg-brand-dark border border-gray-400/30 text-gray-400 hover:bg-gray-400 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                        <button type="button" data-outcome="No Answer"
+                            class="outcome-btn bg-brand-dark border border-gray-400/30 text-gray-400 hover:bg-gray-400 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
                             📵 No Answer
                         </button>
                     </div>
 
                     <!-- Callback Scheduler -->
-                    <div id="callback-scheduler" class="hidden mt-6 bg-brand-dark border border-brand-border rounded-xl p-6 space-y-4">
+                    <div id="callback-scheduler"
+                        class="hidden mt-6 bg-brand-dark border border-brand-border rounded-xl p-6 space-y-4">
                         <h3 class="font-bold text-brand-orange flex items-center gap-2 mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
                             Schedule Callback
                         </h3>
                         <div class="grid grid-cols-2 gap-4">
@@ -505,7 +533,8 @@
                             </div>
                             <div class="col-span-2">
                                 <label class="label-text">Callback Notes</label>
-                                <input type="text" data-field="callbackNotes" class="input-field" placeholder="e.g. Call after 5pm">
+                                <input type="text" data-field="callbackNotes" class="input-field"
+                                    placeholder="e.g. Call after 5pm">
                             </div>
                         </div>
                     </div>
@@ -535,22 +564,31 @@
     </main>
 
     <!-- Call History Panel -->
-    <div id="call-history-panel" class="fixed bottom-0 left-0 w-full z-[70] translate-y-[calc(100%-1px)] transition-transform duration-300">
+    <div id="call-history-panel"
+        class="fixed bottom-0 left-0 w-full z-[70] translate-y-[calc(100%-1px)] transition-transform duration-300">
         <!-- Header (always visible strip) -->
-        <div id="history-header" class="absolute -top-12 left-1/2 -translate-x-1/2 bg-brand-surface border border-b-0 border-brand-border rounded-t-xl px-6 py-3 cursor-pointer flex items-center gap-3 hover:bg-brand-border/50 transition-colors shadow-[0_-4px_12px_rgba(0,0,0,0.5)]">
-            <span class="font-bold text-sm tracking-wider uppercase">Call History (<span id="history-count">0</span>)</span>
+        <div id="history-header"
+            class="absolute -top-12 left-1/2 -translate-x-1/2 bg-brand-surface border border-b-0 border-brand-border rounded-t-xl px-6 py-3 cursor-pointer flex items-center gap-3 hover:bg-brand-border/50 transition-colors shadow-[0_-4px_12px_rgba(0,0,0,0.5)]">
+            <span class="font-bold text-sm tracking-wider uppercase">Call History (<span
+                    id="history-count">0</span>)</span>
             <div id="history-overdue-dot" class="w-2.5 h-2.5 rounded-full bg-brand-orange hidden"></div>
-            <svg id="history-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            <svg id="history-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="transition-transform duration-300">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
         </div>
-        
+
         <!-- Expanded Content -->
-        <div class="bg-brand-surface border-t border-brand-border h-[400px] shadow-[0_-10px_40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
+        <div
+            class="bg-brand-surface border-t border-brand-border h-[400px] shadow-[0_-10px_40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
             <div class="p-6 overflow-y-auto flex-1 bg-brand-dark/50" id="history-cards-container">
                 <!-- Cards injected via JS -->
-                <div class="text-center text-brand-muted mt-10 text-sm">No call history available yet. Complete a call and set an outcome to save.</div>
+                <div class="text-center text-brand-muted mt-10 text-sm">No call history available yet. Complete a call
+                    and set an outcome to save.</div>
             </div>
         </div>
-    </div>    <!-- Objection Sidebar -->
+    </div> <!-- Objection Sidebar -->
     <aside id="objection-sidebar"
         class="fixed top-0 right-0 w-96 h-full bg-brand-dark border-l border-brand-border z-[60] translate-x-full transition-transform duration-300 shadow-2xl">
         <div class="h-16 flex items-center justify-between px-6 border-b border-brand-border">
@@ -623,11 +661,11 @@
         function getScriptSections() {
             const source = state.fields.leadSource || "Fresh Lead";
             const agentName = localStorage.getItem('dura_agent_name') || "Tyler";
-            
+
             let openerText = `I'm reaching out because you recently inquired about some financial protection options, and I wanted to make sure you got the info you were looking for.`;
             let closeText = `I'd like to schedule a brief follow-up to show you exactly what we can do. Would Tuesday at 4pm or Wednesday at 10am work better for you and <span class="placeholder-tag">[spouseFirstName]</span>?`;
             let permissionText = `Now <span class="placeholder-tag">[firstName]</span>, I know your time is valuable. I just have a few quick questions to see how we can best help you and your family. Is now a good time to chat for 2-3 minutes?`;
-            
+
             if (source === "Aged Lead") {
                 openerText = `You filled something out a while back and I just wanted to follow up...`;
                 closeText = `I just want to pick up where we left off and see if this is still something on your radar.`;
@@ -653,7 +691,7 @@
                     id: 1,
                     title: "Opener / Warm-Up",
                     content: `Hi, is this <span class="placeholder-tag">[firstName]</span>? <br><br>Hi <span class="placeholder-tag">[firstName]</span>, this is <span class="text-brand-gold font-bold">${agentName}</span> with Experior Financial Group. How are you doing today? <br><br>${openerText}`,
-                    triggers: [] 
+                    triggers: []
                 },
                 {
                     id: 2,
@@ -827,7 +865,7 @@
 
             // Agent Name Input
             const agentNameInput = document.getElementById('agent-name-input');
-            if(agentNameInput) {
+            if (agentNameInput) {
                 agentNameInput.addEventListener('input', (e) => {
                     localStorage.setItem('dura_agent_name', e.target.value);
                     renderScript();
@@ -842,7 +880,7 @@
                     targetBtn.classList.add('ring-4', 'ring-brand-gold');
                     const outcome = targetBtn.dataset.outcome;
                     state.fields.outcome = outcome;
-                    
+
                     const scheduler = document.getElementById('callback-scheduler');
                     if (outcome === 'Follow Up' || outcome === 'No Answer') {
                         scheduler.classList.remove('hidden');
@@ -1015,7 +1053,7 @@
                 alert("Please fill in required fields (First Name, Last Name, Phone) before exporting.");
                 return;
             }
-            
+
             saveToHistory();
 
             const rowData = getRowData();
@@ -1086,7 +1124,7 @@
                         }
                     }
                 });
-                
+
                 if (state.fields.outcome) {
                     const btn = document.querySelector(`.outcome-btn[data-outcome="${state.fields.outcome}"]`);
                     if (btn) btn.classList.add('ring-4', 'ring-brand-gold');
@@ -1103,14 +1141,14 @@
         function saveToHistory() {
             if (!state.fields.firstName || (!state.fields.outcome && !state.fields.phone)) return;
             let history = JSON.parse(localStorage.getItem('dura_call_history') || '[]');
-            
+
             const record = {
                 id: Date.now(),
                 date: new Date().toISOString(),
                 duration: stopwatchDisplay.textContent,
                 fields: { ...state.fields }
             };
-            
+
             history.unshift(record);
             if (history.length > 50) history = history.slice(0, 50);
             localStorage.setItem('dura_call_history', JSON.stringify(history));
@@ -1120,7 +1158,7 @@
         function renderHistory() {
             const history = JSON.parse(localStorage.getItem('dura_call_history') || '[]');
             document.getElementById('history-count').textContent = history.length;
-            
+
             let hasOverdue = false;
             const container = document.getElementById('history-cards-container');
             if (history.length === 0) {
@@ -1131,7 +1169,7 @@
             container.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">' + history.map(record => {
                 const f = record.fields;
                 const name = `${f.firstName || ''} ${f.lastName || ''}`.trim() || 'Unknown Lead';
-                
+
                 let outcomeColor = 'bg-brand-border text-brand-muted';
                 if (f.outcome === 'Appointment Set') outcomeColor = 'bg-green-500/20 text-green-400 border-green-500/30';
                 else if (f.outcome === 'Follow Up') outcomeColor = 'bg-orange-500/20 text-orange-400 border-orange-500/30';
@@ -1185,7 +1223,7 @@
             else dot.classList.add('hidden');
         }
 
-        window.reloadHistoryRecord = function(id) {
+        window.reloadHistoryRecord = function (id) {
             if (confirm("Reloading this record will overwrite current form fields. Proceed?")) {
                 const history = JSON.parse(localStorage.getItem('dura_call_history') || '[]');
                 const record = history.find(r => r.id === id);
@@ -1197,7 +1235,7 @@
                         timerIsRunning: false,
                         activeSection: 1
                     }));
-                    location.reload(); 
+                    location.reload();
                 }
             }
         };
