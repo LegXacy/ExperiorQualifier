@@ -170,6 +170,34 @@
         <!-- Right: Form Panel -->
         <section class="form-panel">
             <div class="max-w-2xl mx-auto space-y-12 pb-24">
+                <!-- Lead Source Section -->
+                <section id="lead-source-section" class="bg-brand-surface border border-brand-border p-6 rounded-xl space-y-4 shadow-lg mb-8 relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-gold"></div>
+                    <h2 class="text-xl font-bold flex items-center gap-3 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand-gold"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                        Lead Source
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                            <select data-field="leadSource" id="leadSourceDropdown" class="input-field text-lg font-bold border-brand-gold/30">
+                                <option value="Aged Lead">Aged Lead</option>
+                                <option value="Fresh Lead">Fresh Lead</option>
+                                <option value="Referral">Referral</option>
+                                <option value="Vendor / Trade Show">Vendor / Trade Show</option>
+                                <option value="Job Fair">Job Fair</option>
+                            </select>
+                        </div>
+                        <div id="referredByContainer" class="col-span-2 hidden">
+                            <label class="label-text text-brand-gold">Referred By*</label>
+                            <input type="text" data-field="referredBy" class="input-field border-brand-gold/50 bg-brand-gold/5 placeholder:text-brand-gold/50" placeholder="Name of referrer">
+                        </div>
+                        <div id="eventNameContainer" class="col-span-2 hidden">
+                            <label class="label-text text-brand-gold">Event Name*</label>
+                            <input type="text" data-field="eventName" class="input-field border-brand-gold/50 bg-brand-gold/5 placeholder:text-brand-gold/50" placeholder="Name of event">
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Contact Section -->
                 <section data-section="1">
                     <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
@@ -430,14 +458,49 @@
                             <textarea data-field="agentNotes" class="input-field h-24 border-dashed"
                                 placeholder="Personal notes (will not be exported)"></textarea>
                         </div>
-                        <div>
-                            <label class="label-text">Lead Source</label>
-                            <select data-field="leadSource" class="input-field">
-                                <option value="Cold Call">Cold Call</option>
-                                <option value="Aged Lead">Aged Lead</option>
-                                <option value="Facebook">Facebook</option>
-                                <option value="Referral">Referral</option>
-                            </select>
+                    </div>
+                </section>
+
+                <!-- Call Outcome & Workflow Section -->
+                <section id="workflow-section" class="border-t border-brand-border pt-8 mt-8">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand-gold"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Call Outcome
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" data-outcome="Appointment Set" class="outcome-btn bg-brand-dark border border-green-500/30 text-green-500 hover:bg-green-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                            ✅ Appointment Set
+                        </button>
+                        <button type="button" data-outcome="Follow Up" class="outcome-btn bg-brand-dark border border-orange-500/30 text-orange-500 hover:bg-orange-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                            🔁 Follow Up
+                        </button>
+                        <button type="button" data-outcome="Not Interested" class="outcome-btn bg-brand-dark border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                            ❌ Not Interested
+                        </button>
+                        <button type="button" data-outcome="No Answer" class="outcome-btn bg-brand-dark border border-gray-400/30 text-gray-400 hover:bg-gray-400 hover:text-brand-dark font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                            📵 No Answer
+                        </button>
+                    </div>
+
+                    <!-- Callback Scheduler -->
+                    <div id="callback-scheduler" class="hidden mt-6 bg-brand-dark border border-brand-border rounded-xl p-6 space-y-4">
+                        <h3 class="font-bold text-brand-orange flex items-center gap-2 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            Schedule Callback
+                        </h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="label-text">Date</label>
+                                <input type="date" data-field="callbackDate" class="input-field">
+                            </div>
+                            <div>
+                                <label class="label-text">Time</label>
+                                <input type="time" data-field="callbackTime" class="input-field">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="label-text">Callback Notes</label>
+                                <input type="text" data-field="callbackNotes" class="input-field" placeholder="e.g. Call after 5pm">
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -465,7 +528,23 @@
         </section>
     </main>
 
-    <!-- Objection Sidebar -->
+    <!-- Call History Panel -->
+    <div id="call-history-panel" class="fixed bottom-0 left-0 w-full z-[70] translate-y-[calc(100%-1px)] transition-transform duration-300">
+        <!-- Header (always visible strip) -->
+        <div id="history-header" class="absolute -top-12 left-1/2 -translate-x-1/2 bg-brand-surface border border-b-0 border-brand-border rounded-t-xl px-6 py-3 cursor-pointer flex items-center gap-3 hover:bg-brand-border/50 transition-colors shadow-[0_-4px_12px_rgba(0,0,0,0.5)]">
+            <span class="font-bold text-sm tracking-wider uppercase">Call History (<span id="history-count">0</span>)</span>
+            <div id="history-overdue-dot" class="w-2.5 h-2.5 rounded-full bg-brand-orange hidden"></div>
+            <svg id="history-chevron" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </div>
+        
+        <!-- Expanded Content -->
+        <div class="bg-brand-surface border-t border-brand-border h-[400px] shadow-[0_-10px_40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
+            <div class="p-6 overflow-y-auto flex-1 bg-brand-dark/50" id="history-cards-container">
+                <!-- Cards injected via JS -->
+                <div class="text-center text-brand-muted mt-10 text-sm">No call history available yet. Complete a call and set an outcome to save.</div>
+            </div>
+        </div>
+    </div>    <!-- Objection Sidebar -->
     <aside id="objection-sidebar"
         class="fixed top-0 right-0 w-96 h-full bg-brand-dark border-l border-brand-border z-[60] translate-x-full transition-transform duration-300 shadow-2xl">
         <div class="h-16 flex items-center justify-between px-6 border-b border-brand-border">
@@ -535,56 +614,83 @@
 
     <script>
         // Constants & Config
-        const SCRIPT_SECTIONS = [
-            {
-                id: 1,
-                title: "Opener / Warm-Up",
-                content: `Hi, is this <span class="placeholder-tag">[firstName]</span>? <br><br>Hi <span class="placeholder-tag">[firstName]</span>, this is Tyler with Experior Financial Group. How are you doing today? <br><br>I'm reaching out because you recently inquired about some financial protection options, and I wanted to make sure you got the info you were looking for.`,
-                triggers: [] // Always visible
-            },
-            {
-                id: 2,
-                title: "Permission & Purpose",
-                content: `Now <span class="placeholder-tag">[firstName]</span>, I know your time is valuable. I just have a few quick questions to see how we can best help you and your family. Is now a good time to chat for 2-3 minutes?`,
-                triggers: ['firstName']
-            },
-            {
-                id: 3,
-                title: "Needs Discovery",
-                content: `Great. And just to confirm, you're still located in <span class="placeholder-tag">[city]</span>, <span class="placeholder-tag">[state]</span>? <br><br>Excellent. Now, tell me a bit about your current situation. What is your current <span class="placeholder-tag">[socialStatus]</span>? And what do you do for a living, <span class="placeholder-tag">[firstName]</span>?`,
-                triggers: ['socialStatus', 'profession']
-            },
-            {
-                id: 4,
-                title: "Household & Spouse",
-                content: `That's interesting. And <span class="placeholder-tag">[firstName]</span>, you mentioned you're <span class="placeholder-tag">[socialStatus]</span>. Does <span class="placeholder-tag">[spouseFirstName]</span> also work in <span class="placeholder-tag">[spouseProfession]</span>? <br><br>The reason I ask is that we often find ways to maximize benefits when we look at the household as a whole. Between the two of you, what would you say your approximate annual income is?`,
-                triggers: ['annualIncome']
-            },
-            {
-                id: 5,
-                title: "Health & Lifestyle",
-                content: `I appreciate you sharing that. Now, a couple of health questions—they're standard but important. Do you or <span class="placeholder-tag">[spouseFirstName]</span> use any tobacco products? <span class="placeholder-tag">[tobaccoUse]</span>. <br><br>Any major health concerns in the last few years that I should be aware of?`,
-                triggers: ['tobaccoUse']
-            },
-            {
-                id: 6,
-                title: "Current Coverage Check",
-                content: `Got it. Do you currently have any life insurance or mortgage protection in place right now? <br><br>Who is that with? <span class="placeholder-tag">[company]</span>. And do you know what kind of plan that is? <span class="placeholder-tag">[insurancePlan]</span>.`,
-                triggers: ['insurancePlan', 'company']
-            },
-            {
-                id: 7,
-                title: "Budget & Fit",
-                content: `Okay, and what are you currently paying for that monthly? <span class="placeholder-tag">[annualPremium]</span>. <br><br>If we could find a way to provide more comprehensive coverage—or even the same coverage for a better rate—would that be something you'd want to see?`,
-                triggers: ['annualPremium']
-            },
-            {
-                id: 8,
-                title: "Appointment Close",
-                content: `Perfect. Based on what you've told me, <span class="placeholder-tag">[firstName]</span>, I think we have some excellent options for you. <br><br>I'd like to schedule a brief follow-up to show you exactly what we can do. Would Tuesday at 4pm or Wednesday at 10am work better for you and <span class="placeholder-tag">[spouseFirstName]</span>?`,
-                triggers: ['interestedInExperior']
+        function getScriptSections() {
+            const source = state.fields.leadSource || "Fresh Lead";
+            let openerText = `I'm reaching out because you recently inquired about some financial protection options, and I wanted to make sure you got the info you were looking for.`;
+            let closeText = `I'd like to schedule a brief follow-up to show you exactly what we can do. Would Tuesday at 4pm or Wednesday at 10am work better for you and <span class="placeholder-tag">[spouseFirstName]</span>?`;
+            let permissionText = `Now <span class="placeholder-tag">[firstName]</span>, I know your time is valuable. I just have a few quick questions to see how we can best help you and your family. Is now a good time to chat for 2-3 minutes?`;
+            
+            if (source === "Aged Lead") {
+                openerText = `You filled something out a while back and I just wanted to follow up...`;
+                closeText = `I just want to pick up where we left off and see if this is still something on your radar.`;
+            } else if (source === "Fresh Lead") {
+                openerText = `You just expressed some interest and I wanted to reach out right away before life gets busy...`;
+                closeText = `Let's lock in a quick time while everything is fresh — what does your week look like?`;
+            } else if (source === "Referral") {
+                openerText = `<span class="placeholder-tag">[referredBy]</span> thought we should connect and honestly that means a lot to me...`;
+                closeText = `Just like I was able to help <span class="placeholder-tag">[referredBy]</span>, I'd love to do the same for you and your family.`;
+                permissionText = `Now <span class="placeholder-tag">[firstName]</span>, <span class="placeholder-tag">[referredBy]</span> mentioned you might be open to a quick chat. I just have a few quick questions to see how we can best help you. Is now a good time?`;
+            } else if (source === "Vendor / Trade Show") {
+                openerText = `We had a chance to connect at <span class="placeholder-tag">[eventName]</span> and I didn't want to let too much time pass...`;
+                closeText = `You seemed genuinely curious when we spoke — I think a quick sit-down would be worth your time.`;
+                permissionText = `Now <span class="placeholder-tag">[firstName]</span>, since we met at <span class="placeholder-tag">[eventName]</span>, I just have a few quick questions to see how we can best help you. Is now a good time to chat for 2-3 minutes?`;
+            } else if (source === "Job Fair") {
+                openerText = `We connected at <span class="placeholder-tag">[eventName]</span> and you were asking about protecting your income — I wanted to follow up on that...`;
+                closeText = `This is exactly the kind of thing that protects everything you're working toward. Let's find 20 minutes.`;
+                permissionText = `Now <span class="placeholder-tag">[firstName]</span>, since we met at <span class="placeholder-tag">[eventName]</span>, I just have a few quick questions to see how we can best help you. Is now a good time to chat for 2-3 minutes?`;
             }
-        ];
+
+            return [
+                {
+                    id: 1,
+                    title: "Opener / Warm-Up",
+                    content: `Hi, is this <span class="placeholder-tag">[firstName]</span>? <br><br>Hi <span class="placeholder-tag">[firstName]</span>, this is Tyler with Experior Financial Group. How are you doing today? <br><br>${openerText}`,
+                    triggers: [] 
+                },
+                {
+                    id: 2,
+                    title: "Permission & Purpose",
+                    content: permissionText,
+                    triggers: ['firstName']
+                },
+                {
+                    id: 3,
+                    title: "Needs Discovery",
+                    content: `Great. And just to confirm, you're still located in <span class="placeholder-tag">[city]</span>, <span class="placeholder-tag">[state]</span>? <br><br>Excellent. Now, tell me a bit about your current situation. What is your current <span class="placeholder-tag">[socialStatus]</span>? And what do you do for a living, <span class="placeholder-tag">[firstName]</span>?`,
+                    triggers: ['socialStatus', 'profession']
+                },
+                {
+                    id: 4,
+                    title: "Household & Spouse",
+                    content: `That's interesting. And <span class="placeholder-tag">[firstName]</span>, you mentioned you're <span class="placeholder-tag">[socialStatus]</span>. Does <span class="placeholder-tag">[spouseFirstName]</span> also work in <span class="placeholder-tag">[spouseProfession]</span>? <br><br>The reason I ask is that we often find ways to maximize benefits when we look at the household as a whole. Between the two of you, what would you say your approximate annual income is?`,
+                    triggers: ['annualIncome']
+                },
+                {
+                    id: 5,
+                    title: "Health & Lifestyle",
+                    content: `I appreciate you sharing that. Now, a couple of health questions—they're standard but important. Do you or <span class="placeholder-tag">[spouseFirstName]</span> use any tobacco products? <span class="placeholder-tag">[tobaccoUse]</span>. <br><br>Any major health concerns in the last few years that I should be aware of?`,
+                    triggers: ['tobaccoUse']
+                },
+                {
+                    id: 6,
+                    title: "Current Coverage Check",
+                    content: `Got it. Do you currently have any life insurance or mortgage protection in place right now? <br><br>Who is that with? <span class="placeholder-tag">[company]</span>. And do you know what kind of plan that is? <span class="placeholder-tag">[insurancePlan]</span>.`,
+                    triggers: ['insurancePlan', 'company']
+                },
+                {
+                    id: 7,
+                    title: "Budget & Fit",
+                    content: `Okay, and what are you currently paying for that monthly? <span class="placeholder-tag">[annualPremium]</span>. <br><br>If we could find a way to provide more comprehensive coverage—or even the same coverage for a better rate—would that be something you'd want to see?`,
+                    triggers: ['annualPremium']
+                },
+                {
+                    id: 8,
+                    title: "Appointment Close",
+                    content: `Perfect. Based on what you've told me, <span class="placeholder-tag">[firstName]</span>, I think we have some excellent options for you. <br><br>${closeText}`,
+                    triggers: ['interestedInExperior']
+                }
+            ];
+        }
 
         const CRM_HEADERS = [
             "First name", "Middle name", "Last name", "Birthday", "Gender", "Phone", "PhoneType",
@@ -624,7 +730,6 @@
         const prepareExportBtn = document.getElementById('prepare-export');
         const closeModalBtn = document.getElementById('close-modal');
 
-        // Initialization
         function init() {
             loadState();
             renderScript();
@@ -632,6 +737,7 @@
             setupEventListeners();
             startPersistence();
             renderObjections();
+            renderHistory();
 
             if (state.timer.isRunning) {
                 resumeTimer();
@@ -640,7 +746,8 @@
 
         // Script Rendering & Interpolation
         function renderScript() {
-            scriptContainer.innerHTML = SCRIPT_SECTIONS.map(section => `
+            const sections = getScriptSections();
+            scriptContainer.innerHTML = sections.map(section => `
                 <div id="script-sec-${section.id}" class="mb-12 pb-12 border-b border-brand-border/30 last:border-0 transition-all duration-300 ${state.activeSection === section.id ? 'section-active' : 'opacity-40'}">
                     <h3 class="text-xs font-bold text-brand-gold uppercase tracking-[0.2em] mb-4">Section ${section.id}: ${section.title}</h3>
                     <div class="font-mono text-lg leading-relaxed text-brand-text/90 script-content">
@@ -676,6 +783,21 @@
                         }
                     }
 
+                    if (field === 'leadSource') {
+                        const refContainer = document.getElementById('referredByContainer');
+                        const evContainer = document.getElementById('eventNameContainer');
+                        if (e.target.value === 'Referral') {
+                            refContainer.classList.remove('hidden');
+                            evContainer.classList.add('hidden');
+                        } else if (e.target.value === 'Vendor / Trade Show' || e.target.value === 'Job Fair') {
+                            evContainer.classList.remove('hidden');
+                            refContainer.classList.add('hidden');
+                        } else {
+                            refContainer.classList.add('hidden');
+                            evContainer.classList.add('hidden');
+                        }
+                    }
+
                     updateActiveSection(field);
                     renderScript();
                     updateScore();
@@ -689,6 +811,31 @@
                 });
             });
 
+            // Outcome Buttons
+            document.querySelectorAll('.outcome-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.outcome-btn').forEach(b => b.classList.remove('ring-4', 'ring-brand-gold'));
+                    const targetBtn = e.target.closest('button');
+                    targetBtn.classList.add('ring-4', 'ring-brand-gold');
+                    const outcome = targetBtn.dataset.outcome;
+                    state.fields.outcome = outcome;
+                    
+                    const scheduler = document.getElementById('callback-scheduler');
+                    if (outcome === 'Follow Up' || outcome === 'No Answer') {
+                        scheduler.classList.remove('hidden');
+                    } else {
+                        scheduler.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Call History Panel Toggle
+            document.getElementById('history-header').addEventListener('click', () => {
+                const panel = document.getElementById('call-history-panel');
+                panel.classList.toggle('translate-y-[calc(100%-1px)]');
+                document.getElementById('history-chevron').classList.toggle('rotate-180');
+            });
+
             toggleTimerBtn.addEventListener('click', toggleTimer);
             resetTimerBtn.addEventListener('click', resetTimer);
             openObjectionsBtn.addEventListener('click', () => objectionSidebar.classList.remove('translate-x-full'));
@@ -700,6 +847,7 @@
 
             clearAllBtn.addEventListener('click', () => {
                 if (confirm("Clear all data and start a new call?")) {
+                    saveToHistory();
                     localStorage.removeItem('experior_state');
                     location.reload();
                 }
@@ -726,8 +874,9 @@
 
         function updateActiveSection(fieldChanged) {
             let newActive = 1;
-            for (let i = SCRIPT_SECTIONS.length - 1; i >= 0; i--) {
-                const section = SCRIPT_SECTIONS[i];
+            const sections = getScriptSections();
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const section = sections[i];
                 if (section.triggers.some(t => state.fields[t] && state.fields[t].trim() !== "")) {
                     newActive = section.id;
                     break;
@@ -799,13 +948,30 @@
         // Export Logic
         function getRowData() {
             const f = state.fields;
+            let exportTags = f.tags || "";
+            if (f.leadSource === 'Referral' && f.referredBy) {
+                exportTags += exportTags ? `, Referral: ${f.referredBy}` : `Referral: ${f.referredBy}`;
+            } else if ((f.leadSource === 'Vendor / Trade Show' || f.leadSource === 'Job Fair') && f.eventName) {
+                exportTags += exportTags ? `, Event: ${f.eventName}` : `Event: ${f.eventName}`;
+            }
+
+            let exportNotes = f.notes || "";
+            if (f.outcome) {
+                exportNotes = `[Outcome: ${f.outcome}]\n` + exportNotes;
+            }
+            if ((f.outcome === 'Follow Up' || f.outcome === 'No Answer') && f.callbackDate) {
+                const cbTime = f.callbackTime || "00:00";
+                const cbNotes = f.callbackNotes ? ` — ${f.callbackNotes}` : "";
+                exportNotes += `\n[Callback: ${f.callbackDate} ${cbTime}${cbNotes}]`;
+            }
+
             return [
                 f.firstName || "", f.middleName || "", f.lastName || "", f.birthday || "", f.gender || "", f.phone || "", f.phoneType || "",
                 f.email || "", f.socialStatus || "", f.profession || "", f.tobaccoUse || "", f.homePhone || "",
                 f.workPhone || "", f.cellPhone || "", f.state || "", f.city || "", f.street || "", f.zipCode || "",
                 f.annualIncome || "", f.interestedInExperior || "", f.spouseFirstName || "",
                 f.spouseLastName || "", f.spouseBirthday || "", f.spouseGender || "", f.spouseProfession || "",
-                f.spouseTobaccoUse || "", f.weddingAnniversary || "", f.tags || "", f.notes || "",
+                f.spouseTobaccoUse || "", f.weddingAnniversary || "", exportTags, exportNotes,
                 f.insurancePlan || "", f.company || "", f.policyOwner || "", f.renewalDate || "", f.faceAmount || "",
                 f.annualPremium || "", f.policyYear || "", f.policyNumber || ""
             ];
@@ -826,6 +992,9 @@
                 alert("Please fill in required fields (First Name, Last Name, Phone) before exporting.");
                 return;
             }
+            
+            saveToHistory();
+
             const rowData = getRowData();
             document.getElementById('export-preview').textContent = rowData.join("\t");
             document.getElementById('export-timestamp').textContent = `Generated: ${new Date().toLocaleString()}`;
@@ -883,11 +1052,132 @@
                         if (key === 'socialStatus' && state.fields[key] === 'Married') {
                             document.getElementById('spouse-section').classList.remove('hidden');
                         }
+                        if (key === 'leadSource') {
+                            const refContainer = document.getElementById('referredByContainer');
+                            const evContainer = document.getElementById('eventNameContainer');
+                            if (state.fields[key] === 'Referral') {
+                                refContainer.classList.remove('hidden');
+                            } else if (state.fields[key] === 'Vendor / Trade Show' || state.fields[key] === 'Job Fair') {
+                                evContainer.classList.remove('hidden');
+                            }
+                        }
                     }
                 });
+                
+                if (state.fields.outcome) {
+                    const btn = document.querySelector(`.outcome-btn[data-outcome="${state.fields.outcome}"]`);
+                    if (btn) btn.classList.add('ring-4', 'ring-brand-gold');
+                    if (state.fields.outcome === 'Follow Up' || state.fields.outcome === 'No Answer') {
+                        document.getElementById('callback-scheduler').classList.remove('hidden');
+                    }
+                }
+
                 updateTimerDisplay();
             }
         }
+
+        // History Functions
+        function saveToHistory() {
+            if (!state.fields.firstName || (!state.fields.outcome && !state.fields.phone)) return;
+            let history = JSON.parse(localStorage.getItem('dura_call_history') || '[]');
+            
+            const record = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                duration: stopwatchDisplay.textContent,
+                fields: { ...state.fields }
+            };
+            
+            history.unshift(record);
+            if (history.length > 50) history = history.slice(0, 50);
+            localStorage.setItem('dura_call_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('dura_call_history') || '[]');
+            document.getElementById('history-count').textContent = history.length;
+            
+            let hasOverdue = false;
+            const container = document.getElementById('history-cards-container');
+            if (history.length === 0) {
+                container.innerHTML = '<div class="text-center text-brand-muted mt-10 text-sm">No call history available yet. Complete a call and set an outcome to save.</div>';
+                return;
+            }
+
+            container.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">' + history.map(record => {
+                const f = record.fields;
+                const name = `${f.firstName || ''} ${f.lastName || ''}`.trim() || 'Unknown Lead';
+                
+                let outcomeColor = 'bg-brand-border text-brand-muted';
+                if (f.outcome === 'Appointment Set') outcomeColor = 'bg-green-500/20 text-green-400 border-green-500/30';
+                else if (f.outcome === 'Follow Up') outcomeColor = 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+                else if (f.outcome === 'Not Interested') outcomeColor = 'bg-red-500/20 text-red-400 border-red-500/30';
+                else if (f.outcome === 'No Answer') outcomeColor = 'bg-gray-400/20 text-gray-300 border-gray-400/30';
+
+                let callbackHtml = '';
+                if (f.callbackDate) {
+                    const cbDateTime = new Date(`${f.callbackDate}T${f.callbackTime || '00:00'}`);
+                    const isOverdue = cbDateTime < new Date();
+                    if (isOverdue) hasOverdue = true;
+                    callbackHtml = `
+                        <div class="mt-3 flex items-center gap-2 text-xs font-mono bg-brand-dark rounded p-2 border ${isOverdue ? 'border-red-500/50 text-red-400' : 'border-brand-border text-brand-gold'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            ${f.callbackDate} ${f.callbackTime || ''}
+                            ${isOverdue ? '<span class="bg-red-500 text-white px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ml-auto tracking-wider">Overdue</span>' : ''}
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="bg-brand-dark border border-brand-border rounded-xl p-5 hover:border-brand-gold/30 transition-colors flex flex-col relative group">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-brand-text text-lg leading-tight truncate pr-4">${name}</h4>
+                            <span class="text-[10px] uppercase font-bold px-2 py-1 rounded-full border bg-brand-surface border-brand-border whitespace-nowrap">${f.leadSource || 'No Source'}</span>
+                        </div>
+                        
+                        ${f.outcome ? `<div class="inline-block text-xs font-bold px-2.5 py-1 rounded-lg border ${outcomeColor} mb-2 w-max">${f.outcome}</div>` : ''}
+                        
+                        <div class="text-xs text-brand-muted flex items-center gap-2 mt-auto pt-2">
+                            <span>${new Date(record.date).toLocaleDateString()}</span>
+                            <span>•</span>
+                            <span>${record.duration || '00:00:00'}</span>
+                        </div>
+                        
+                        ${callbackHtml}
+
+                        <!-- Action Overlay -->
+                        <div class="absolute inset-0 bg-brand-dark/90 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                            <button onclick="reloadHistoryRecord(${record.id})" class="btn-secondary py-2 px-4 text-sm flex items-center gap-2 hover:text-brand-gold hover:border-brand-gold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                                Reload
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('') + '</div>';
+
+            const dot = document.getElementById('history-overdue-dot');
+            if (hasOverdue) dot.classList.remove('hidden');
+            else dot.classList.add('hidden');
+        }
+
+        window.reloadHistoryRecord = function(id) {
+            if (confirm("Reloading this record will overwrite current form fields. Proceed?")) {
+                const history = JSON.parse(localStorage.getItem('dura_call_history') || '[]');
+                const record = history.find(r => r.id === id);
+                if (record) {
+                    state.fields = { ...record.fields };
+                    localStorage.setItem('experior_state', JSON.stringify({
+                        fields: state.fields,
+                        timerSeconds: 0,
+                        timerIsRunning: false,
+                        activeSection: 1
+                    }));
+                    location.reload(); 
+                }
+            }
+        };
 
         function renderObjections() {
             const template = document.getElementById('objection-template');
