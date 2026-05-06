@@ -109,6 +109,12 @@
                         class="text-brand-gold">Qualifier</span></h1>
             </div>
             <div class="h-6 w-px bg-brand-border mx-2"></div>
+            <!-- Agent Name -->
+            <div class="flex items-center gap-2">
+                <label class="text-[10px] text-brand-muted uppercase font-bold tracking-widest whitespace-nowrap">Your Name</label>
+                <input type="text" id="agent-name-input" class="bg-brand-dark/50 border border-brand-border rounded px-2 py-1 text-sm font-bold text-brand-gold w-24 focus:outline-none focus:border-brand-gold transition-colors placeholder:text-brand-muted/50" placeholder="e.g. Tyler">
+            </div>
+            <div class="h-6 w-px bg-brand-border mx-2"></div>
             <!-- Stopwatch -->
             <div
                 class="flex items-center gap-3 bg-brand-surface/50 border border-brand-border px-3 py-1.5 rounded-full">
@@ -616,6 +622,8 @@
         // Constants & Config
         function getScriptSections() {
             const source = state.fields.leadSource || "Fresh Lead";
+            const agentName = localStorage.getItem('dura_agent_name') || "Tyler";
+            
             let openerText = `I'm reaching out because you recently inquired about some financial protection options, and I wanted to make sure you got the info you were looking for.`;
             let closeText = `I'd like to schedule a brief follow-up to show you exactly what we can do. Would Tuesday at 4pm or Wednesday at 10am work better for you and <span class="placeholder-tag">[spouseFirstName]</span>?`;
             let permissionText = `Now <span class="placeholder-tag">[firstName]</span>, I know your time is valuable. I just have a few quick questions to see how we can best help you and your family. Is now a good time to chat for 2-3 minutes?`;
@@ -644,7 +652,7 @@
                 {
                     id: 1,
                     title: "Opener / Warm-Up",
-                    content: `Hi, is this <span class="placeholder-tag">[firstName]</span>? <br><br>Hi <span class="placeholder-tag">[firstName]</span>, this is Tyler with Experior Financial Group. How are you doing today? <br><br>${openerText}`,
+                    content: `Hi, is this <span class="placeholder-tag">[firstName]</span>? <br><br>Hi <span class="placeholder-tag">[firstName]</span>, this is <span class="text-brand-gold font-bold">${agentName}</span> with Experior Financial Group. How are you doing today? <br><br>${openerText}`,
                     triggers: [] 
                 },
                 {
@@ -731,6 +739,12 @@
         const closeModalBtn = document.getElementById('close-modal');
 
         function init() {
+            const savedAgentName = localStorage.getItem('dura_agent_name');
+            if (savedAgentName) {
+                const agentNameInput = document.getElementById('agent-name-input');
+                if (agentNameInput) agentNameInput.value = savedAgentName;
+            }
+
             loadState();
             renderScript();
             updateScore();
@@ -810,6 +824,15 @@
                     }
                 });
             });
+
+            // Agent Name Input
+            const agentNameInput = document.getElementById('agent-name-input');
+            if(agentNameInput) {
+                agentNameInput.addEventListener('input', (e) => {
+                    localStorage.setItem('dura_agent_name', e.target.value);
+                    renderScript();
+                });
+            }
 
             // Outcome Buttons
             document.querySelectorAll('.outcome-btn').forEach(btn => {
